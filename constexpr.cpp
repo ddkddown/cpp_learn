@@ -17,5 +17,8 @@ int main() {
     //这一步会编译出错
     //test = 4;
 
-    cout<<"test: "<<test<<endl;
+    // contexpr修饰的指针表示这是一个常量指针，指针存储地址不可变，而不是指向值不可变。
+    constexpr int *p = &staff_size; 
+    *p = 5;
+    cout<<"test: "<<test<<" ,staff_size:"<<staff_size<<endl;
 }
