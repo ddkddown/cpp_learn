@@ -1,0 +1,23 @@
+__COUNT__ 宏是一个int， 初始值为0, 每预编译一次就+1
+
+用处：创建全局变量
+如在mmkv库的实现中，通过__COUNT__来创建不同名称的scope_lock, 方便定位
+```
+
+#define SCOPED_LOCK(lock) _SCOPEDLOCK(lock, __COUNTER__)
+#define _SCOPEDLOCK(lock, counter) __SCOPEDLOCK(lock, counter)
+#define __SCOPEDLOCK(lock, counter)                                                                                    \
+mmkv::ScopedLock<std::remove_pointer<decltype(lock)>::type> __scopedLock##counter(lock)
+
+void funcxxx0() {
+  SCOPED_LOCK(g_instanceLock);
+  //约等于
+  //mmkv::ScopedLock<std::remove_pointer<decltype(lock)>::type> __scopedLock0(lock)
+}
+    
+void funcxxx1() {
+  SCOPED_LOCK(g_instanceLock);
+  //约等于
+  //mmkv::ScopedLock<std::remove_pointer<decltype(lock)>::type> __scopedLock1(lock)
+}
+```
