@@ -1,0 +1,17 @@
+之前转换类型都是用的static_cast, 但是也会导致精度丢失，只是一般不会在意而已。
+union可以用来处理这种转换, 如在mmkv中的实现
+```
+template <typename T, typename P>
+union Converter {
+    static_assert(sizeof(T) == sizeof(P), "size not match");
+    T first;
+    P second;
+};
+
+static inline int64_t Float64ToInt64(double v) {
+    Converter<double, int64_t> converter;
+    converter.first = v;
+    return converter.second;
+}
+
+```
